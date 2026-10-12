@@ -19,7 +19,6 @@ The project is small enough to understand file by file while demonstrating pract
 - [Conversation memory and result format](#conversation-memory-and-result-format)
 - [Using the terminal interface](#using-the-terminal-interface)
 - [Customizing the project](#customizing-the-project)
-- [Troubleshooting](#troubleshooting)
 - [Limitations and data handling](#limitations-and-data-handling)
 
 ## What the agent can do
@@ -420,26 +419,6 @@ Use `python main.py --help` to see the command-line options. Terminal mode enabl
 | Add an agent tool | Define a function with `@tool` in `tools.py`, register it in `build_agent()`, and update `run_research()` activity handling and the UI labels as needed. |
 
 Make one change at a time, rerun the app, and check the affected behavior. For this small project, a practical check is to complete a question, open a source, ask a follow-up, and download the PDF. There is currently no automated test suite in the repository.
-
-## Troubleshooting
-
-| Problem | What to check |
-| --- | --- |
-| `python` or `python3` is not found | Install Python, reopen the terminal, and check the version. Windows can use `py -3`. |
-| PowerShell blocks environment activation | You can use Command Prompt with `venv\Scripts\activate.bat`, or run `venv\Scripts\python.exe` directly for installation and startup commands. |
-| `ModuleNotFoundError` | Activate the correct environment and run `python -m pip install -r requirements.txt`. |
-| Streamlit does not start | Run `python -m streamlit run app.py` from the project folder and read the terminal error. |
-| The default port is busy | Run `python -m streamlit run app.py --server.port 8502` and open the printed URL. |
-| The app asks for an API key | Check `.env` or enter the key in sidebar Settings. Terminal mode needs an environment key. |
-| OpenAI rejects the key | Check the key and whether a sidebar value or shell variable is overriding `.env`. |
-| A usage or billing limit is reached | Check your API account's available usage, then retry. |
-| Research fails after changing the model | Check the model name, your account's access, and support for tool calling. The app may show a generic research error. |
-| Search returns no results or is unavailable | Try a more specific query or retry later; search providers and network availability can vary. |
-| Research cannot finish | Try a narrower question or Quick brief, and check the connection and model settings. |
-| Conversation history disappears | Session memory is temporary. Use PDF download to keep a report. |
-| A link says `source-unavailable` | The workflow did not recognize that URL in observed searches or recent history. Ask for another search. |
-| PDF output formats something differently | Export supports basic Markdown; complex nesting, code blocks, images, and unusual characters may not reproduce exactly. |
-| UI or theme changes do not appear | Rerun the app; if necessary, stop and restart Streamlit from the project folder. |
 
 ## Limitations and data handling
 
