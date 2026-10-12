@@ -18,7 +18,6 @@ The project is small enough to understand file by file while demonstrating pract
 - [Every file explained](#every-file-explained)
 - [Conversation memory and result format](#conversation-memory-and-result-format)
 - [Using the terminal interface](#using-the-terminal-interface)
-- [Customizing the project](#customizing-the-project)
 - [Limitations and data handling](#limitations-and-data-handling)
 
 ## What the agent can do
@@ -404,21 +403,6 @@ python main.py "Compare solar and wind energy" --deep
 ```
 
 Use `python main.py --help` to see the command-line options. Terminal mode enables both tools by default and reads the model from `OPENAI_MODEL`.
-
-## Customizing the project
-
-| Change you want | Where to make it |
-| --- | --- |
-| Change the starting model | Set `OPENAI_MODEL` in `.env`; the browser Settings field can override it for the current session. |
-| Change research instructions or depth behavior | Edit the prompt and workflow limit in `research.py`. |
-| Change fields returned by the agent | Edit `ResearchResult`, then update the display or export code that uses those fields. |
-| Change sample questions, labels, or layout | Edit `show_landing()` and the relevant interface code in `app.py`. |
-| Change colors or spacing | Edit `assets/style.css` and the native theme in `.streamlit/config.toml`. Some colors also appear directly in the stylesheet. |
-| Change PDF formatting or accent colors | Edit `export_pdf()` in `research.py`. |
-| Change search result limits | Edit `search_web()` in `tools.py`. |
-| Add an agent tool | Define a function with `@tool` in `tools.py`, register it in `build_agent()`, and update `run_research()` activity handling and the UI labels as needed. |
-
-Make one change at a time, rerun the app, and check the affected behavior. For this small project, a practical check is to complete a question, open a source, ask a follow-up, and download the PDF. There is currently no automated test suite in the repository.
 
 ## Limitations and data handling
 
