@@ -4,6 +4,10 @@ Atlas is a personal AI research project built with Python, Streamlit, LangChain,
 
 The project is small enough to understand file by file while demonstrating practical skills for a portfolio: tool calling, conversation memory, structured AI responses, a custom interface, and document export. It runs locally and keeps conversations in memory, with no database or account system to configure.
 
+![Atlas welcome screen with a question box, research depth options, and orange accents on a black background](assets/img/landing.png)
+
+*The welcome screen: start a question, choose a research depth, and adjust settings in the sidebar.*
+
 ## Contents
 
 - [What the agent can do](#what-the-agent-can-do)
@@ -17,8 +21,6 @@ The project is small enough to understand file by file while demonstrating pract
 - [Customizing the project](#customizing-the-project)
 - [Troubleshooting](#troubleshooting)
 - [Limitations and data handling](#limitations-and-data-handling)
-- [Suggested reading order and demo](#suggested-reading-order-and-demo)
-- [Resume description](#resume-description)
 
 ## What the agent can do
 
@@ -131,6 +133,10 @@ When you return to the project later, activate the existing virtual environment 
 6. Click **Download PDF** to save the current conversation as `atlas-research.pdf`.
 7. Click **New research** when you want to clear the conversation and start another topic.
 
+![An Atlas research brief showing an answer and key takeaways with source links](assets/img/result.png)
+
+*A completed brief brings the answer, key takeaways, and source links into one view.*
+
 Try this first:
 
 > Compare solar and wind energy for a beginner. Explain cost, reliability, and practical trade-offs, and link your sources.
@@ -188,7 +194,13 @@ AI-agent-/
 ├── .streamlit/
 │   └── config.toml           # Streamlit theme and runtime settings
 └── assets/
-    └── style.css             # Custom interface styles
+    ├── style.css             # Custom interface styles
+    └── img/                  # Screenshots used in this README
+        ├── landing.png
+        ├── result.png
+        ├── followup.png
+        ├── followup2.png
+        └── pdf_sample.png
 ```
 
 Your local folder may also contain `.env`, `venv/`, `__pycache__/`, and `.git/`. These contain your local configuration, installed packages, generated Python cache files, and Git history respectively. They are not additional application modules. Files and folders starting with a dot may be hidden by your file manager.
@@ -215,6 +227,10 @@ The main helpers are:
 
 Streamlit reruns the script when you interact with many widgets. `st.session_state` keeps values between those reruns. `pending_prompt` records a question ready to run; the script consumes it, calls `run_research()`, saves the result, and reruns to show the updated conversation. Failed requests keep their question so the **Retry research** button can try again.
 
+![Source preview cards and suggested follow-up questions in the Atlas conversation view](assets/img/followup.png)
+
+*Source cards let you inspect the evidence; suggested questions give you a starting point for the next request.*
+
 The download button calls `export_pdf()` with the whole current message list. PDF bytes are generated in memory and offered to the browser; the app does not write reports into the project folder.
 
 ### `research.py` — the shared research engine
@@ -238,6 +254,10 @@ The **system prompt** tells the model how to research: use available tools, pref
 The agent uses a recursion limit of **20 workflow steps** for Quick brief and **35** for Deep research. These are workflow limits, not exact tool-call counts. OpenAI requests have a 45-second timeout and one configured retry; search has its own 15-second timeout. These settings bound parts of the process, rather than setting one deadline for the entire research request.
 
 `export_pdf()` handles basic Markdown headings, bold and italic text, list markers, tables, and clickable links. It includes questions, answer text, key findings, source lists, and page numbers. It uses fonts bundled with ReportLab, so no separate font installation is required. It does not reproduce the entire browser layout or include the activity tab and suggested follow-up buttons.
+
+![A sample exported Atlas PDF containing the question, research brief, and key findings](assets/img/pdf_sample.png)
+
+*An example report saved through Download PDF. The report presents the conversation in a document layout.*
 
 ### `tools.py` — the tools the agent can call
 
@@ -282,6 +302,10 @@ This stylesheet controls layout, spacing, typography, buttons, the welcome scree
 The `:root` block defines shared variables such as `--accent` for orange, `--background` for black, `--ink` for primary text, and `--muted` for secondary text. Some components also use explicit color values for surfaces and hover states.
 
 Selectors such as `.source-card` style the project's HTML. Selectors using `[data-testid="..."]` style Streamlit components. Media queries adjust the design at different screen widths. `app.py` reads and inserts this file when rendering the page.
+
+### `assets/img/` — README screenshots
+
+These images illustrate the app in this guide. `landing.png` shows the welcome screen, `result.png` shows a research brief, `followup.png` shows sources and suggested questions, `followup2.png` shows a later question in the same conversation, and `pdf_sample.png` shows an exported report. 
 
 ### `.streamlit/config.toml` — Streamlit's configuration
 
@@ -329,6 +353,10 @@ The browser stores messages in `st.session_state.messages`. The terminal stores 
 Browser memory survives normal Streamlit reruns within the current session. Refreshing or disconnecting can reset that session; **New research** explicitly clears the conversation. Terminal memory ends when the process exits. Download a PDF before clearing a conversation you want to keep.
 
 All stored messages remain available for display and PDF export while the session lasts. Only the latest 24 messages are sent as conversation context for the next research request, so much older details may no longer influence an answer.
+
+![A continuing Atlas conversation with two questions explored, Deep research selected, and a follow-up being typed](assets/img/followup2.png)
+
+*Continue the same conversation with a follow-up, and choose the depth for the next answer.*
 
 `ResearchResult` defines these answer fields:
 
