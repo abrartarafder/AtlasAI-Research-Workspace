@@ -1,8 +1,9 @@
-langchain
-wikipedia
-langchain-community
-langchain-openai
-langchain-anthropic
-python-dotenv
-pydantic
+langchain>=1.4,<2
+langchain-openai>=1.7,<2
+langchain-core>=1.6,<2
+ddgs>=9.16,<10
+python-dotenv>=1.2,<2
+pydantic>=2.12,<3
+streamlit>=1.55,<2
+reportlab>=4.4,<5
 

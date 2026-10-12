@@ -1,57 +1,49 @@
+"""Terminal entrypoint. For the visual interface: streamlit run app.py."""
+
+import argparse
+import os
+from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
-from langchain.agents import create_agent
 
-load_dotenv()
+from research import ResearchSettings, export_markdown, friendly_error, run_research
 
 
-# Define the structure of the research output
-class ResearchResult(BaseModel):
-    topic: str = Field(description="The research topic")
-    summary: str = Field(description="A detailed research summary")
-    sources: list[str] = Field(description="Sources used for research")
-    tools_used: list[str] = Field(description="Tools used by the agent")
+def main():
+    load_dotenv(Path(__file__).with_name(".env"))
+    parser = argparse.ArgumentParser(description="Atlas research assistant")
+    parser.add_argument("topic", nargs="?", help="Research one topic, then exit")
+    parser.add_argument("--deep", action="store_true", help="Investigate more angles and sources")
+    args = parser.parse_args()
+    key = os.getenv("OPENAI_API_KEY", "")
+    if not key:
+        parser.exit(1, "Set OPENAI_API_KEY in .env before starting research.\n")
+    history = []
+    settings = ResearchSettings(model=os.getenv("OPENAI_MODEL", "gpt-4o"),
+                                depth="Deep research" if args.deep else "Quick brief")
+    while True:
+        try:
+            question = args.topic or input("\nResearch question (or 'quit'): ").strip()
+            if question.lower() in {"quit", "exit"}:
+                break
+            if not question:
+                continue
+            run = run_research(question, history, settings, key,
+                               on_activity=lambda event: print(f"  {event['tool']}: {event['status']}"))
+            history.extend([
+                {"role": "user", "content": question},
+                {"role": "assistant", "content": run["result"]["summary"], "payload": run},
+            ])
+            print(export_markdown(history[-2:], run["result"]["topic"]))
+        except (KeyboardInterrupt, EOFError):
+            break
+        except Exception as exc:
+            print(friendly_error(exc))
+            if args.topic:
+                raise SystemExit(1)
+        if args.topic:
+            break
 
 
-# Initialize the language model
-llm = ChatOpenAI(model="gpt-4o", temperature=0)
-
-
-# Create the research agent
-agent = create_agent(
-    model=llm,
-    tools=[],
-    system_prompt="""
-    You are a research assistant that helps generate research papers.
-
-    Your responsibilities:
-    - Understand the user's research topic.
-    - Generate an informative, well-structured research summary.
-    - Include sources only when they can be verified.
-    - Record which tools were used.
-    - Never invent citations or claim to have used tools that are unavailable.
-    """,
-    response_format=ResearchResult,
-)
-
-
-# Run the agent
-response = agent.invoke({
-    "messages": [
-        {
-            "role": "user",
-            "content": "Write a research summary on the impact of AI on society."
-        }
-    ]
-})
-
-
-# Extract structured output
-result = response["structured_response"]
-
-print("\nTopic:", result.topic)
-print("\nSummary:", result.summary)
-print("\nSources:", result.sources)
-print("\nTools Used:", result.tools_used)
+if __name__ == "__main__":
+    main()
