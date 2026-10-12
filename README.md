@@ -423,20 +423,4 @@ Make one change at a time, rerun the app, and check the affected behavior. For t
 - **The app is intended for local personal use.** It has no login system or access controls for a public deployment.
 - **Exports use basic formatting.** The PDF is a readable report with orange accents on white pages, rather than a copy of the black browser interface.
 
-## Suggested reading order and demo
 
-If you are learning from the code, start with `main.py` to see a short request loop. Then read `tools.py` to understand tool implementations, `research.py` to follow the agent workflow, and `app.py` to see how the workflow becomes an interactive app. Finish with the stylesheet and Streamlit configuration to understand the design.
-
-To demonstrate the project in a portfolio or interview:
-
-1. Ask a focused comparison question with web search enabled.
-2. Open the activity tab and explain that the model chooses tools while Python executes them.
-3. Ask a follow-up referring to the previous answer to demonstrate conversation context.
-4. Request a numerical comparison, then inspect the activity to confirm a calculator call.
-5. Open a cited source and download the conversation as a PDF.
-
-This demonstrates Python functions and data structures, safe arithmetic parsing, external API integration, structured responses, session state, error handling, and a complete user flow from question to exported report.
-
-## Resume description
-
-> Built an AI research assistant with Python, Streamlit, LangChain, and OpenAI, integrating web search, a restricted arithmetic tool, session-based conversation memory, structured research briefs, visible tool activity, and PDF export with source links.
